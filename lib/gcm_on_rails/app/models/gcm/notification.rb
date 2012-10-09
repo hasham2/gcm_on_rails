@@ -1,12 +1,21 @@
-class Gcm::Notification < Gcm::Base
-  self.table_name = "gcm_notifications"
+class Gcm::Notification
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  store_in collection: "gcm_notifications"
 
   include ::ActionView::Helpers::TextHelper
   extend ::ActionView::Helpers::TextHelper
-  serialize :data
+  
+  field :collapse_key, type: String
+  field :data, type: Hash
+  field :delay_while_idle, type: Boolean
+  field :sent_at, type: DateTime
+  field :time_to_live, type: Integer
+
+  #serialize :data
 
   belongs_to :device, :class_name => 'Gcm::Device'
-  validates_presence_of :collapse_key if :time_to_live?
+  validates_presence_of :collapse_key, :if => :time_to_live?
 
   class << self
     # Opens a connection to the Google GCM server and attempts to batch deliver

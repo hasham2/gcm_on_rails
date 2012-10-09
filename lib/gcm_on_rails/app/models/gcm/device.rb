@@ -8,12 +8,18 @@
 #
 # Example:
 #   Device.create(:registration_id => 'FOOBAR')
-class Gcm::Device < Gcm::Base
-  self.table_name = "gcm_devices"
-
+class Gcm::Device
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  store_in collection: "gcm_devices" 
+  
+  field :registration_id, type: String
+  field :last_registered_at, type: DateTime
+  
   attr_accessible :registration_id
 
-  has_many :notifications, :class_name => 'Gcm::Notification', :dependent => :destroy
+  has_many :notifications, class_name: 'Gcm::Notification', dependent: :destroy
+  
   validates_presence_of :registration_id
   validates_uniqueness_of :registration_id
 
