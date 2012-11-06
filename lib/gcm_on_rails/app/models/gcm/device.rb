@@ -22,7 +22,7 @@ module Gcm
     has_many :notifications, class_name: 'Gcm::Notification', dependent: :destroy
   
     validates_presence_of :registration_id
-    validates_uniqueness_of :registration_id
+    #validates_uniqueness_of :registration_id
 
     before_save :set_last_registered_at
 
