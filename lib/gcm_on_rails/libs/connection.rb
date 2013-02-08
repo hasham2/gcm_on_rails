@@ -18,7 +18,7 @@ module Gcm
           headers = {"Content-Type" => "application/x-www-form-urlencoded;charset=UTF-8",
                      "Authorization" => "key=#{api_key}"}
 
-          post_data = notification.data[:data].map{|k,v| "&data.#{k}=#{URI.escape(v)}"}.reduce{|k,v| k + v}
+          post_data = notification.data["data"].map{|k,v| "&data.#{k}=#{URI.escape(v)}"}.reduce{|k,v| k + v}
           extra_data = "registration_id=#{notification.data["registration_ids"][0]}"
           extra_data = "#{extra_data}&collapse_key=#{notification.collapse_key}" unless notification.collapse_key.nil?
           extra_data = "#{extra_data}&delay_while_idle=1" if notification.delay_while_idle
