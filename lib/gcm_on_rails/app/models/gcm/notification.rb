@@ -12,7 +12,7 @@ module Gcm
     field :delay_while_idle, type: Boolean
     field :sent_at, type: DateTime
     field :time_to_live, type: Integer
-
+    field :server_response, type: Hash
     #serialize :data
 
     belongs_to :device, :class_name => 'Gcm::Device'
@@ -80,6 +80,7 @@ module Gcm
                     logger.warn(ex.message)
                   else
                    notification.sent_at = Time.now
+                   notification.server_response = response
                    notification.save!
                   end
               elsif response[:code] == 401
