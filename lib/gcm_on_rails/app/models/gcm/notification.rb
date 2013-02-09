@@ -40,7 +40,7 @@ module Gcm
         end
 
         unless notifications.nil? || notifications.empty?
-          api_key = Gcm::Connection.open
+          api_key = configatron.gcm_on_rails.api_key
           if api_key
             notifications.each do |notification|
               puts "sending notification #{notification.id} to device #{notification.device.registration_id}"
