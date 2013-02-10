@@ -5,24 +5,24 @@ module Gcm
   module Connection
     class << self
       def send_notification(notification, api_key, format)
-
+      
+        data = HashWithIndifferentAccess.new(notification.data)
+        
         if format == 'json'
           headers = {"Content-Type" => "application/json",
                      "Authorization" => "key=#{api_key}"}
 
-          data = notification.data.merge({:collapse_key => notification.collapse_key}) unless notification.collapse_key.nil?
+          data = data.merge({:collapse_key => notification.collapse_key}) unless notification.collapse_key.nil?
           data = data.merge({:delay_while_idle => notification.delay_while_idle}) unless notification.delay_while_idle.nil?
           data = data.merge({:time_to_live => notification.time_to_live}) unless notification.time_to_live.nil?
           data = data.to_json
         else   #plain text format
           headers = {"Content-Type" => "application/x-www-form-urlencoded;charset=UTF-8",
                      "Authorization" => "key=#{api_key}"}
-          begin
-            post_data = notification.data["data"].map{|k,v| "&data.#{k}=#{URI.escape(v)}"}.reduce{|k,v| k + v}
-          rescue
-            post_data = notification.data[:data].map{|k,v| "&data.#{k}=#{URI.escape(v)}"}.reduce{|k,v| k + v}
-          end
-          extra_data = "registration_id=#{notification.data["registration_ids"][0]}"
+          
+          post_data = data["data"].map{|k,v| "&data.#{k}=#{URI.escape(v)}"}.reduce{|k,v| k + v}
+          
+          extra_data = "registration_id=#{data["registration_ids"][0]}"
           extra_data = "#{extra_data}&collapse_key=#{notification.collapse_key}" unless notification.collapse_key.nil?
           extra_data = "#{extra_data}&delay_while_idle=1" if notification.delay_while_idle
           data = "#{extra_data}#{post_data}"
